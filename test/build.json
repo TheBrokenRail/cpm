@@ -1,0 +1,5 @@
+{
+  "dependencies" : {
+    "jerryscript": "https://github.com/jerryscript-project/jerryscript.git"
+  }
+}
