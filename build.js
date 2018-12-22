@@ -16,7 +16,7 @@ module.exports = async argv => {
     fs.mkdirSync(prefix);
 
     let files = fs.readdirSync('packages');
-    for (let i = 0; i < packages.length; i++) {
+    for (let i = 0; i < files.length; i++) {
       build(target, prefix, process.cwd() + '/packages/' + files[i]);
     }
   } else {

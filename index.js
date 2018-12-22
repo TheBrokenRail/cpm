@@ -4,7 +4,7 @@ const build = require('./build');
 const yargs = require('yargs').command('build [system] [arch]', 'Build Project', yargs => {
   yargs.positional('system', {
     describe: 'Compile Target',
-    default: 'host'
+    default: 'default'
   }).positional('arch', {
     describe: 'Compile Arch'
   });
