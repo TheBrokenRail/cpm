@@ -35,6 +35,7 @@ module.exports = async (arch, verbose) => {
 
   console.log('Downloading Android NDK');
 
+  fs.mkdirSync('build/ndk');
   await new Promise((resolve, reject) => {
     let stream = request('https://dl.google.com/android/repository/android-ndk-' + ndkVer + '-' + sysPlatform + '-' + sysArch + '.zip').pipe(fs.createWriteStream('build/ndk/ndk.zip'));
     stream.on('finish', () => {
