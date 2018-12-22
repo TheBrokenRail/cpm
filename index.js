@@ -6,8 +6,7 @@ const yargs = require('yargs').command('build [system] [arch]', 'Build Project',
     describe: 'Compile Target',
     default: 'host'
   }).positional('arch', {
-    describe: 'Compile Arch',
-    default: 'host'
+    describe: 'Compile Arch'
   });
 }, argv => {
   build(argv);
@@ -16,4 +15,4 @@ const yargs = require('yargs').command('build [system] [arch]', 'Build Project',
 }).option('verbose', {
   alias: 'v',
   default: false
-}).demandCommand(1, 'No Command Specified').help().argv;
+}).demandCommand(1, 'No Command Specified').strict().help().argv;

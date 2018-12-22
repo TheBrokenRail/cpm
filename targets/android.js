@@ -33,15 +33,22 @@ module.exports = async (arch, verbose) => {
   }
   const ndkVer = 'r18b'
 
+  console.log('Downloading Android NDK');
+
   await new Promise((resolve, reject) => {
     let stream = request('https://dl.google.com/android/repository/android-ndk-' + ndkVer + '-' + sysPlatform + '-' + sysArch + '.zip').pipe(fs.createWriteStream('build/ndk/ndk.zip'));
     stream.on('finish', () => {
       resolve();
     });
   });
+
+  console.log('Extracting Android NDK');
+
   let zip = new AdmZip('build/ndk/ndk.zip');
   zip.extractAllTo('build/ndk', true);
   const ndkPath = 'build/ndk/android-ndk-' + ndkVer;
+
+  console.log('Making Standalone Toolchain');
 
   let opt = {};
   let extra = '';
@@ -50,4 +57,40 @@ module.exports = async (arch, verbose) => {
     extra = '-v';
   }
   child_process.spawnSync('python', [ndkPath + '/build/tools/make_standalone_toolchain.py', '--arch', arch, '--api', '21', '--install-dir', 'build/ndk/toolchain', extra], opt);
+
+  if (!fs.existsSync('build/ndk/toolchain')) {
+    throw new Error('Stansalone Toolchain Not Generated');
+  }
+
+  let target = '';
+  if (arch === 'arm') {
+    target = 'arm-linux-androideabi';
+  } else if (arch === 'arm64') {
+    target = 'aarch64-linux-android';
+  } else if (arch === 'x86') {
+    target = 'i686-linux-android';
+  } else if (arch === 'x86_64') {
+    target = 'x86_64-linux-android';
+  }
+
+  let bin = process.cwd() + '/build/ndk/toolchain/bin/';
+
+  return {
+    target: target,
+    make: {
+      AR: bin + target + '-ar',
+      AS: bin + target + '-clang',
+      CC: bin + target + '-clang',
+      CXX: bin + target + '-clang++',
+      LD: bin + target + '-ld',
+      STRIP: bin + target + '-strip',
+      CFLAGS: '-fPIE -fPIC',
+      LDFLAGS: '-pie'
+    },
+    cmake: {
+      CMAKE_C_COMPILER: bin + target + '-clang',
+      CMAKE_CXX_COMPILER: bin + target + '-clang++',
+      CMAKE_C_FLAGS: '-fPIE -fPIC'
+    }
+  };
 };
