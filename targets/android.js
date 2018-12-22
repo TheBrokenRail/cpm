@@ -52,12 +52,12 @@ module.exports = async (arch, verbose) => {
   console.log('Making Standalone Toolchain');
 
   let opt = {};
-  let extra = '';
+  let args = [ndkPath + '/build/tools/make_standalone_toolchain.py', '--arch', arch, '--api', '21', '--install-dir', 'build/ndk/toolchain'];
   if (verbose) {
     opt = {stdio: 'inherit'};
-    extra = '-v';
+    args = args.concat('-v');
   }
-  child_process.spawnSync('python', [ndkPath + '/build/tools/make_standalone_toolchain.py', '--arch', arch, '--api', '21', '--install-dir', 'build/ndk/toolchain', extra], opt);
+  child_process.spawnSync('python', args, opt);
 
   if (!fs.existsSync('build/ndk/toolchain')) {
     throw new Error('Stansalone Toolchain Not Generated');
