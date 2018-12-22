@@ -21,9 +21,9 @@ module.exports = async (arch, verbose) => {
   let sysPlatform = process.platform;
   if (sysPlatform === 'win32') {
     sysPlatform = 'windows';
-  } else if (sysArch === 'linux') {
+  } else if (sysPlatform === 'linux') {
     sysPlatform = 'linux';
-  } else if (sysArch === 'darwin') {
+  } else if (sysPlatform === 'darwin') {
     sysPlatform = 'darwin';
   } else {
     throw new Error('Your OS Does Not Support The Android NDK');
